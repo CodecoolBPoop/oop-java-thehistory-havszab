@@ -11,28 +11,33 @@ public class TheHistoryArray implements TheHistory {
 
     @Override
     public void add(String text) {
-        //TODO: check the TheHistory interface for more information
+
     }
 
     @Override
     public void removeWord(String wordToBeRemoved) {
-        //TODO: check the TheHistory interface for more information
+        for (int i = 0; i<wordsArray.length; i++) {
+            if(wordsArray[i] == wordToBeRemoved)
+                wordsArray[i] = null;
+        }
     }
 
     @Override
     public int size() {
-        //TODO: check the TheHistory interface for more information
-        return 0;
+        int arrSize = wordsArray.length;
+        return arrSize;
     }
 
     @Override
     public void clear() {
-        //TODO: check the TheHistory interface for more information
+
     }
 
     @Override
     public void replaceOneWord(String from, String to) {
-        //TODO: check the TheHistory interface for more information
+        for(String word : wordsArray)
+            if (word == from)
+                word = to;
     }
 
     @Override
