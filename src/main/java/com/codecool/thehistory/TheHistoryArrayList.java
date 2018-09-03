@@ -15,12 +15,9 @@ public class TheHistoryArrayList implements TheHistory {
 
     @Override
     public void add(String text) {
-        String[]  wordsOfText = text.split(" ");
+        String[] wordsOfText = text.split(" ");
         ArrayList<String> words = new ArrayList<>(Arrays.asList(wordsOfText));
-        ListIterator<String> wordIterator = words.listIterator();
-        while (wordIterator.hasNext()) {
-            wordsArrayList.add(wordIterator.next());
-        }
+        wordsArrayList = words;
     }
 
     @Override
@@ -76,9 +73,7 @@ public class TheHistoryArrayList implements TheHistory {
                 for (int i=0; i<=fromWords.length-1; i++) {
                     wordsArrayList.remove(x);
                 }
-                for (int i=0; i<=toWords.length-1; i++) {
-                    wordsArrayList.add(x+i, toWords[i]);
-                }
+                wordsArrayList.addAll(x, Arrays.asList(toWords));
                 wordsSize = wordsArrayList.size();
                 x += toWords.length-1;
             }

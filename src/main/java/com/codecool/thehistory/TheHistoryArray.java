@@ -1,6 +1,9 @@
 package com.codecool.thehistory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TheHistoryArray implements TheHistory {
 
@@ -38,7 +41,7 @@ public class TheHistoryArray implements TheHistory {
     @Override
     public void replaceOneWord(String from, String to) {
         for (int i = 0; i <= wordsArray.length-1; i++) {
-            if (wordsArray[i].equals(from)) {
+            if (wordsArray[i] == from) {
                 wordsArray[i] = to;
             }
         }
@@ -46,18 +49,46 @@ public class TheHistoryArray implements TheHistory {
 
     @Override
     public void replaceMoreWords(String[] fromWords, String[] toWords) {
-        String[] arrPartToCompare = new String[fromWords.length];
-        for (int arrIdx = 0; arrIdx <= wordsArray.length - fromWords.length; arrIdx++) {
-            System.arraycopy(wordsArray, arrIdx, arrPartToCompare, 0, fromWords.length);
-            // Check equality of part of source array and array of words to be replaced
-            if(Arrays.equals(fromWords, arrPartToCompare)) {
-                //copy end of the Array
-                String[] arrEnd = new String[wordsArray.length-arrIdx+1+fromWords.length ];
-                System.arraycopy(wordsArray, arrIdx+1+fromWords.length, arrEnd, 0, arrEnd.length);
+        List<Integer> indicesWhereReplaceBegins = new ArrayList<>();
+        for (int wordsArrIdx = 0; wordsArrIdx < wordsArray.length; wordsArrIdx++)
+            if (allEquals(wordsArrIdx, fromWords)) {
+                indicesWhereReplaceBegins.add(wordsArrIdx);
+                wordsArrIdx += fromWords.length - 1;
+            }
+        String[] destArr = new String[wordsArray.length + (indicesWhereReplaceBegins.size() * (toWords.length - fromWords.length))];
+        int idxArrIdx = 0;
+        int wordsArrIdx = 0;
+        for (int destArrIdx = 0; destArrIdx < destArr.length ; destArrIdx++) {
+            if(!(idxArrIdx > indicesWhereReplaceBegins.size()-1) &&
+                 wordsArrIdx == indicesWhereReplaceBegins.get(idxArrIdx)) {
+                for (int toWordsIdx = 0; toWordsIdx < toWords.length; toWordsIdx++) {
+                    destArr[destArrIdx+toWordsIdx] = toWords[toWordsIdx];
                 }
-                //System.out.println(Arrays.toString(wordsArray));for (int replaceIdx = 0; replaceIdx <= fromWords.length-1; replaceIdx++) {
-                //wordsArray[replaceIdx+arrIdx] = toWords[replaceIdx];
+                idxArrIdx++;
+                destArrIdx += toWords.length-1;
+                wordsArrIdx += fromWords.length;
+            } else {
+                destArr[destArrIdx] = wordsArray[wordsArrIdx];
+                wordsArrIdx++;
+            }
         }
+        wordsArray = destArr;
+    }
+
+    private boolean allEquals(int currentIteration, String[] fromWords) {
+        if (isEnoughWordsLeft(currentIteration, fromWords) && wordsArray[currentIteration].equals(fromWords[0])) {
+            if(fromWords.length == 1)
+                return true;
+            for (int i = 1; i < fromWords.length; i++)
+                if (!(wordsArray[currentIteration + i].equals(fromWords[i]))) return false;
+                else if (wordsArray[currentIteration + i].equals(fromWords[i]) && i == fromWords.length - 1)
+                    return true;
+        }
+        return false;
+    }
+
+    private boolean isEnoughWordsLeft(int currentIteration, String[] fromWords) {
+        return (currentIteration + fromWords.length <= wordsArray.length);
     }
 
     @Override
